@@ -13,7 +13,10 @@ The circuitry is very simple - we just need to power the IR LEDs. I used 5 LEDs 
 
 ##### Let's set up auto-cropping, as we're only concerned with the palm. This is the command I used to produce a 600x600 image (you'll want it to be square).
 
+![First](C:\Users\Sparsh\Desktop\one.png)
+
 ``` raspistill -vf -w 600 -h 600 -roi 0.46,0.34,0.25,0.25 -o pic.jpg ```
+
 
 ##### Now we have this cropped image of our palm. We need to perform some image processing before we can actually make use of it.
 
@@ -29,6 +32,8 @@ The circuitry is very simple - we just need to power the IR LEDs. I used 5 LEDs 
 
 ``` noiseReduced = cv2.fastNlMeansDenoising(gray) ```
 
+![Second](C:\Users\Sparsh\Desktop\two.png)
+
 Much smoother. Now, we need to increase the contrast to really make the veins stand out. The method I used was histogram equalization. This distributes the intensities of the pixels in the image, "equalizing" the histogram. We then invert the image, since many OpenCV functions assume the background is black and foreground is white.
 
 ``` 
@@ -39,6 +44,8 @@ img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
 img_yuv[:,:,0] = cv2.equalizeHist(img_yuv[:,:,0])
 img_output = cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
 ```
+
+![Third](C:\Users\Sparsh\Desktop\three.png)
 
 That made quite a big difference. A lot of the "skin" is gone (now black), with the vein pattern being largely white. It's still not quite ready yet - there's a lot of redundant data in this image.
 
@@ -55,13 +62,17 @@ while cv2.countNonZero(img) > 0:
     temp  = cv2.subtract(img, temp)
     skel = cv2.bitwise_or(skel, temp)
     img[:,:] = eroded[:,:]
-
 ```
+
+![Fourth](C:\Users\Sparsh\Desktop\four.png)
+
 I applied a quick threshold to make the veins more visible. Every pixel which is 5 or higher (everything very dark gray or lighter) will become 255 (white).
 
 ```
 ret, thr = cv2.threshold(skel, 5,255, cv2.THRESH_BINARY);
 ```
+
+![Fifth](C:\Users\Sparsh\Desktop\five.png)
 
 To see how accurate this was, I overlayed the vein pattern over the original image to see if there was a correlation.
 
