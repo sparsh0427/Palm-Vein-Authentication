@@ -66,7 +66,7 @@ while cv2.countNonZero(img) > 0:
 
 ![Fourth](C:\Users\Sparsh\Desktop\four.png)
 
-I applied a quick threshold to make the veins more visible. Every pixel which is 5 or higher (everything very dark gray or lighter) will become 255 (white).
+I applied a quick threshold to make the veins more visible. Every pixel which is 5 or higher (everything very dark gray or lighter) will become 255 - white
 
 ```
 ret, thr = cv2.threshold(skel, 5,255, cv2.THRESH_BINARY);
